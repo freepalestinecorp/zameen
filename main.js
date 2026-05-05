@@ -4,24 +4,27 @@
 // SUPABASE CONFIGURATION
 // Replace these with your actual Supabase URL and Anon Key when you have them.
 // ==========================================
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
-const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'YOUR_SUPABASE_URL';
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || 'YOUR_SUPABASE_KEY';
 
-let sb = null;
+// Initialize Supabase and attach to window so other scripts can see it
 if (window.supabase) {
-  sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  window.sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 }
+const sb = window.sb; // Local alias for internal functions
 
 document.addEventListener('DOMContentLoaded', async () => {
+  console.log("Main Scripts Loaded");
   // Handle Loader if it exists on the page
   const loader = document.getElementById('loader-wrapper');
   if (loader) {
+    // Faster fade out
     setTimeout(() => {
       loader.style.opacity = '0';
       setTimeout(() => {
         loader.style.display = 'none';
-      }, 500);
-    }, 1200);
+      }, 300);
+    }, 500); 
   }
 
   // Active link highlighting

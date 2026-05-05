@@ -234,14 +234,31 @@
   <script src="./main.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
+      console.log("DOM Loaded, starting property fetch...");
       setTimeout(async () => {
         const grid = document.getElementById('popular-grid');
+        if (!window.sb) {
+          console.error("Supabase client (sb) is not initialized. Check if environment variables are working.");
+          grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; padding:2rem; color: var(--text-muted);">Connection Error: Supabase not initialized.</p>';
+          return;
+        }
+
         try {
+          console.log("Fetching properties from Supabase...");
           const { data: props, error } = await sb.from('properties').select('*').order('views', { ascending: false }).limit(4);
-          if (error || !props || props.length === 0) {
+          
+          if (error) {
+            console.error("Supabase Error:", error);
+            throw error;
+          }
+
+          if (!props || props.length === 0) {
+            console.warn("No properties found in the database.");
             grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; padding:2rem; color: var(--text-muted);">No properties listed yet. Be the first!</p>';
             return;
           }
+
+          console.log("Properties fetched successfully:", props);
           grid.innerHTML = props.map(prop => {
             const img = prop.image_url ? prop.image_url.split(',')[0] : 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3';
             return `
@@ -262,9 +279,10 @@
             </article>`;
           }).join('');
         } catch(e) {
-          grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; padding:2rem; color: var(--text-muted);">Could not load properties.</p>';
+          console.error("General Fetch Error:", e);
+          grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; padding:2rem; color: var(--text-muted);">Could not load properties. Check console for details.</p>';
         }
-      }, 600);
+      }, 300);
     });
   </script></body>
 </html>
