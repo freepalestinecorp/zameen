@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zameen | Buy Properties</title>
+  <link rel="stylesheet" href="./style.css">
+  <style>
+    .buy-layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    .filters {
+      background: #ffffff;
+      padding: 1.5rem;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-color);
+      height: fit-content;
+      position: sticky;
+      top: 90px;
+    }
+    .filters h3 { margin-bottom: 1.5rem; color: var(--primary); }
+    .filter-group { margin-bottom: 1.5rem; }
+    .filter-group label { display: block; font-weight: 500; margin-bottom: 0.5rem; font-size: 0.9rem; }
+    .filter-group select, .filter-group input { width: 100%; }
+    
+    .list-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    @media (max-width: 900px) {
+      .buy-layout { grid-template-columns: 1fr; }
+      .filters { position: static; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="index.html" class="brand">Zameen</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="buy.html" class="active">Buy</a></li>
+      <li><a href="sell.html">Sell</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+    <div id="auth-nav-container" style="display: flex; gap: 1rem; align-items: center;">
+          <a href="sell.html" class="btn btn-primary" style="padding: 0.5rem 1rem;">List Property</a>
+          <button id="nav-login-btn" class="btn btn-outline" style="padding: 0.5rem 1rem;" onclick="toggleModal('loginModal')">Login</button>
+        </div>
+  </nav>
+
+  <!-- Login Modal -->
+  <div class="modal-overlay" id="loginModal" style="display:none;"></div>
+
+  <main class="container">
+    <!-- Breadcrumb -->
+    <div style="font-size: 0.9rem; color: var(--text-muted);">
+      Home > Properties > For Sale
+    </div>
+    
+    <div class="buy-layout">
+      <!-- Sidebar Filters -->
+      <aside class="filters">
+        <h3>Filter Properties</h3>
+        <div class="filter-group">
+          <label>Location</label>
+          <select class="form-control">
+            <option>All Cities</option>
+            <option>Lahore</option>
+            <option>Karachi</option>
+            <option>Islamabad</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Property Type</label>
+          <select class="form-control">
+            <option>Houses</option>
+            <option>Plots</option>
+            <option>Commercial</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Price Range</label>
+          <div style="display: flex; gap: 0.5rem;">
+            <input type="number" class="form-control" placeholder="Min">
+            <input type="number" class="form-control" placeholder="Max">
+          </div>
+        </div>
+        <div class="filter-group">
+          <label>Area Size</label>
+          <select class="form-control">
+            <option>Any</option>
+            <option>5 Marla</option>
+            <option>10 Marla</option>
+            <option>1 Kanal</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" style="width: 100%;">Apply Filters</button>
+      </aside>
+
+      <!-- Property List -->
+      <div>
+        <div class="list-header">
+          <h2>Properties for Sale</h2>
+          <select class="form-control" style="width: auto;">
+            <option>Sort by: Popular</option>
+            <option>Price: Low to High</option>
+            <option>Price: High to Low</option>
+            <option>Newest</option>
+          </select>
+        </div>
+
+        <div class="property-grid" id="dynamic-property-grid" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));">
+          <!-- Property Items will be loaded here dynamically -->
+          <p style="grid-column: 1/-1; text-align:center; padding: 2rem;">Loading properties from database...</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Small delay to ensure sb is initialized
+      setTimeout(() => {
+        if(window.fetchAndRenderProperties) {
+          window.fetchAndRenderProperties('dynamic-property-grid');
+        }
+      }, 500);
+    });
+  </script>
+</body>
+</html>

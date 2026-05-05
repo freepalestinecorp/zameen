@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zameen | About Us</title>
+  <link rel="stylesheet" href="./style.css">
+  <style>
+    .about-header {
+      background: linear-gradient(rgba(0, 166, 81, 0.9), rgba(0, 166, 81, 0.9)), url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3') center/cover;
+      padding: 6rem 2rem;
+      text-align: center;
+      color: #ffffff;
+    }
+    .about-header h1 { color: #ffffff; font-size: 3rem; margin-bottom: 1rem; }
+    .about-header p { font-size: 1.2rem; max-width: 700px; margin: 0 auto; opacity: 0.9; }
+    
+    .about-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      padding: 4rem 0;
+      align-items: center;
+    }
+    .about-content img {
+      width: 100%;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+    }
+    .about-text h2 { color: var(--primary); font-size: 2rem; margin-bottom: 1rem; }
+    .about-text p { font-size: 1.1rem; color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.8; }
+    
+    .stats-row {
+      display: flex;
+      justify-content: space-around;
+      background: var(--bg-panel);
+      padding: 3rem;
+      border-radius: var(--radius-md);
+      margin-top: 2rem;
+    }
+    .stat-item { text-align: center; }
+    .stat-item .num { font-size: 3rem; font-weight: 900; color: var(--primary); }
+    .stat-item .label { font-weight: 500; color: var(--text-muted); text-transform: uppercase; }
+
+    @media (max-width: 900px) {
+      .about-content { grid-template-columns: 1fr; }
+      .stats-row { flex-direction: column; gap: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="index.html" class="brand">Zameen</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="buy.html">Buy</a></li>
+      <li><a href="sell.html">Sell</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="about.html" class="active">About</a></li>
+    </ul>
+    <div id="auth-nav-container" style="display: flex; gap: 1rem; align-items: center;">
+          <a href="sell.html" class="btn btn-primary" style="padding: 0.5rem 1rem;">List Property</a>
+          <button id="nav-login-btn" class="btn btn-outline" style="padding: 0.5rem 1rem;" onclick="toggleModal('loginModal')">Login</button>
+        </div>
+  </nav>
+
+  <header class="about-header">
+    <h1>Revolutionizing Real Estate</h1>
+    <p>We connect buyers, sellers, and agents through a transparent, high-speed, and secure platform. Finding your dream property has never been easier.</p>
+  </header>
+
+  <!-- Login Modal -->
+  <div class="modal-overlay" id="loginModal" style="display:none;"></div>
+
+  <main class="container">
+    <div class="about-content">
+      <div class="about-text">
+        <h2>Our Mission</h2>
+        <p>Since our inception, our goal has been to provide an intuitive and data-rich platform that empowers individuals to make informed real estate decisions. Whether you are looking for a luxury villa in Lahore or a commercial plot in Islamabad, our extensive database ensures you find exactly what you need.</p>
+        <p>We pride ourselves on offering accurate listings, robust market data, and top-tier support for our agent network.</p>
+      </div>
+      <div>
+        <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3" alt="Office Meeting">
+      </div>
+    </div>
+    
+    <div class="stats-row">
+      <div class="stat-item">
+        <div class="num">15M+</div>
+        <div class="label">Monthly Visitors</div>
+      </div>
+      <div class="stat-item">
+        <div class="num">500k</div>
+        <div class="label">Active Listings</div>
+      </div>
+      <div class="stat-item">
+        <div class="num">12k+</div>
+        <div class="label">Registered Agents</div>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./main.js"></script>
+</body>
+</html>

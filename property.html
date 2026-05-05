@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Property Details - Zameen.com Clone</title>
+  <link rel="stylesheet" href="./style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    .property-detail-container { max-width: 1200px; margin: 2rem auto; padding: 0 5%; }
+    .gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem; }
+    .gallery img { width: 100%; height: 400px; object-fit: cover; border-radius: var(--radius-md); }
+    .thumbnails { display: flex; gap: 1rem; overflow-x: auto; margin-top: 1rem; }
+    .thumbnails img { width: 100px; height: 80px; object-fit: cover; border-radius: var(--radius-sm); cursor: pointer; border: 2px solid transparent; }
+    .thumbnails img:hover { border-color: var(--primary); }
+    .detail-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; }
+    .detail-card { background: white; padding: 2rem; border-radius: var(--radius-md); box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    .price-tag { font-size: 2.5rem; color: var(--primary); font-weight: bold; margin-bottom: 1rem; }
+    .agent-card { text-align: center; }
+    .agent-avatar { width: 80px; height: 80px; border-radius: 50%; background: #eee; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: var(--primary); }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="logo">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--primary)"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        Zameen
+      </a>
+      <div class="nav-links">
+        <a href="buy.html">Buy</a>
+        <a href="sell.html">Sell / Rent</a>
+        <a href="index.html#projects">New Projects</a>
+        <a href="dashboard.html">Dashboard</a>
+      </div>
+      <div id="auth-nav-container" style="display: flex; gap: 1rem; align-items: center;">
+        <a href="sell.html" class="btn btn-primary" style="padding: 0.5rem 1rem;">List Property</a>
+        <button id="nav-login-btn" class="btn btn-outline" style="padding: 0.5rem 1rem;" onclick="toggleModal('loginModal')">Login</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Login Modal -->
+  <div class="modal-overlay" id="loginModal"></div>
+
+  <main class="property-detail-container" id="detail-view">
+    <h2 style="text-align: center; margin-top: 5rem; color: var(--text-muted);">Loading Property Details...</h2>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(async () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const propId = urlParams.get('id');
+        const container = document.getElementById('detail-view');
+
+        if (!propId) {
+          container.innerHTML = '<h2 style="text-align:center; margin-top: 5rem; color: red;">Property Not Found</h2>';
+          return;
+        }
+
+        try {
+          const { data, error } = await sb.from('properties').select('*').eq('id', propId).single();
+          if (error) throw error;
+
+          // Attempt to increment views
+          try {
+             const currentViews = data.views || 0;
+             await sb.from('properties').update({ views: currentViews + 1 }).eq('id', propId);
+          } catch (e) {
+             console.log("Could not update views, column might not exist yet.");
+          }
+
+          const images = data.image_url ? data.image_url.split(',') : ['https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3'];
+          
+          let thumbnailsHtml = images.map((img, idx) => `
+            <img src="${img}" onclick="document.getElementById('main-img').src='${img}'" alt="thumbnail ${idx+1}">
+          `).join('');
+
+          container.innerHTML = `
+            <div style="margin-bottom: 2rem;">
+              <span class="badge" style="background:var(--primary); color:white; padding: 0.25rem 0.75rem; border-radius: 4px; font-weight:bold;">For ${data.purpose}</span>
+              <h1 style="margin-top: 1rem; font-size: 2.5rem;">${data.title}</h1>
+              <p style="color: var(--text-muted); font-size: 1.1rem;">📍 ${data.location}, ${data.city}</p>
+            </div>
+            
+            <div>
+              <img id="main-img" src="${images[0]}" style="width: 100%; height: 500px; object-fit: cover; border-radius: var(--radius-md);">
+              <div class="thumbnails">
+                ${thumbnailsHtml}
+              </div>
+            </div>
+
+            <div class="detail-grid" style="margin-top: 3rem;">
+              <div class="detail-card">
+                <div class="price-tag">PKR ${Number(data.price).toLocaleString()}</div>
+                <div style="display:flex; gap: 2rem; margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">
+                  <div><strong>Property Type:</strong><br>${data.property_type}</div>
+                  <div><strong>Added:</strong><br>${new Date(data.created_at).toLocaleDateString()}</div>
+                </div>
+                <h3>Description</h3>
+                <p style="line-height: 1.8; color: var(--text-color); white-space: pre-wrap;">${data.description}</p>
+              </div>
+
+              <div class="detail-card agent-card">
+                <div class="agent-avatar">👤</div>
+                <h3>${data.publisher_name || 'Verified Agent'}</h3>
+                <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Listed Property</p>
+                
+                ${data.lock_phone ? 
+                  `<button class="btn btn-primary" disabled style="width: 100%; margin-bottom: 1rem; opacity: 0.6; cursor: not-allowed; background: #999;">Phone Locked</button>` : 
+                  `<button class="btn btn-primary" style="width: 100%; margin-bottom: 1rem;" onclick="this.innerText='${data.publisher_phone || 'Not Provided'}'">View Phone Number</button>`
+                }
+                
+                ${data.lock_email ?
+                  `<button class="btn btn-outline" disabled style="width: 100%; opacity: 0.6; cursor: not-allowed;">Email Locked</button>` :
+                  `<button class="btn btn-outline" style="width: 100%;" onclick="window.location.href='mailto:${data.publisher_email}'">Send Email</button>`
+                }
+              </div>
+            </div>
+          `;
+        } catch (err) {
+          console.error(err);
+          container.innerHTML = '<h2 style="text-align:center; margin-top: 5rem; color: red;">Failed to load property details.</h2>';
+        }
+      }, 500);
+    });
+  </script>
+</body>
+</html>
