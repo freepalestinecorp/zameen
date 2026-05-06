@@ -2,16 +2,19 @@
 
 // ==========================================
 // SUPABASE CONFIGURATION
-// Replace these with your actual Supabase URL and Anon Key when you have them.
 // ==========================================
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'YOUR_SUPABASE_URL';
-const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || 'YOUR_SUPABASE_KEY';
+const SUPABASE_URL = 'https://hykxvbjbcecbwpavhqov.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh5a3h2YmpiY2VjYndwYXZocW92Iiwicm9sZSI6Imh5a3h2YmpiY2VjYndwYXZocW92Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc4MDI5MjYsImV4cCI6MjA5MzM3ODkyNn0.KEWGERNXe5UBUf-ORjumW49E5HI9z8txQA9wuy7aljw';
 
-// Initialize Supabase and attach to window so other scripts can see it
+// Initialize Supabase and attach to window
+let sb = null;
 if (window.supabase) {
-  window.sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  window.sb = sb;
+  console.log('Supabase connected successfully');
+} else {
+  console.error('Supabase CDN not loaded!');
 }
-const sb = window.sb; // Local alias for internal functions
 
 document.addEventListener('DOMContentLoaded', async () => {
   console.log("Main Scripts Loaded");

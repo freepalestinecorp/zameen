@@ -233,54 +233,39 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./main.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      console.log("DOM Loaded, starting property fetch...");
-      setTimeout(async () => {
+    document.addEventListener('DOMContentLoaded', function() {
+      setTimeout(async function() {
         const grid = document.getElementById('popular-grid');
         if (!window.sb) {
-          console.error("Supabase client (sb) is not initialized. Check if environment variables are working.");
           grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; padding:2rem; color: var(--text-muted);">Connection Error: Supabase not initialized.</p>';
           return;
         }
-
         try {
-          console.log("Fetching properties from Supabase...");
-          const { data: props, error } = await sb.from('properties').select('*').order('views', { ascending: false }).limit(4);
-          
-          if (error) {
-            console.error("Supabase Error:", error);
-            throw error;
-          }
-
+          const { data: props, error } = await window.sb.from('properties').select('*').order('views', { ascending: false }).limit(4);
+          if (error) throw error;
           if (!props || props.length === 0) {
-            console.warn("No properties found in the database.");
             grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; padding:2rem; color: var(--text-muted);">No properties listed yet. Be the first!</p>';
             return;
           }
-
-          console.log("Properties fetched successfully:", props);
-          grid.innerHTML = props.map(prop => {
+          grid.innerHTML = props.map(function(prop) {
             const img = prop.image_url ? prop.image_url.split(',')[0] : 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3';
-            return `
-            <article class="property-card" style="cursor:pointer;" onclick="window.location.href='property.html?id=${prop.id}'">
-              <div class="card-img-wrapper">
-                <span class="badge" style="background: #e74c3c;">🔥 Popular</span>
-                <img src="${img}" alt="${prop.title}">
-              </div>
-              <div class="card-content">
-                <div class="price">PKR ${Number(prop.price).toLocaleString()}</div>
-                <h3 class="title">${prop.title}</h3>
-                <div class="location">${prop.location}, ${prop.city}</div>
-                <div class="features">
-                  <span>🏠 ${prop.property_type}</span>
-                  <span style="margin-left:auto; color: var(--text-muted); font-size:0.8rem;">👁️ ${prop.views || 0} views</span>
-                </div>
-              </div>
-            </article>`;
+            return '<article class="property-card" style="cursor:pointer;" onclick="window.location.href=\'property.html?id=' + prop.id + '\'">' +
+              '<div class="card-img-wrapper">' +
+              '<span class="badge" style="background: #e74c3c;">🔥 Popular</span>' +
+              '<img src="' + img + '" alt="' + prop.title + '">' +
+              '</div>' +
+              '<div class="card-content">' +
+              '<div class="price">PKR ' + Number(prop.price).toLocaleString() + '</div>' +
+              '<h3 class="title">' + prop.title + '</h3>' +
+              '<div class="location">' + prop.location + ', ' + prop.city + '</div>' +
+              '<div class="features">' +
+              '<span>🏠 ' + prop.property_type + '</span>' +
+              '<span style="margin-left:auto; color: var(--text-muted); font-size:0.8rem;">👁️ ' + (prop.views || 0) + ' views</span>' +
+              '</div></div></article>';
           }).join('');
         } catch(e) {
-          console.error("General Fetch Error:", e);
-          grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; padding:2rem; color: var(--text-muted);">Could not load properties. Check console for details.</p>';
+          console.error("Fetch Error:", e);
+          grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; padding:2rem; color: var(--text-muted);">Could not load properties.</p>';
         }
       }, 300);
     });
