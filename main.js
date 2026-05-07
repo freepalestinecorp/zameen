@@ -3,15 +3,29 @@
 // ==========================================
 // SUPABASE CONFIGURATION
 // ==========================================
-const SUPABASE_URL = 'https://hykxvbjbcecbwpavhqov.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh5a3h2YmpiY2VjYndwYXZocW92Iiwicm9sZSI6Imh5a3h2YmpiY2VjYndwYXZocW92Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc4MDI5MjYsImV4cCI6MjA5MzM3ODkyNn0.KEWGERNXe5UBUf-ORjumW49E5HI9z8txQA9wuy7aljw';
+const SUPABASE_URL = 'https://hykxvbjbcecbwpavhqov.supabase.co/rest/v1/';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh5a3h2YmpiY2VjYndwYXZocW92Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc4MDI5MjYsImV4cCI6MjA5MzM3ODkyNn0.KEWGERNXe5UBUf-ORjumW49E5HI9z8txQA9wuy7aljw';
 
 // Initialize Supabase and attach to window
 let sb = null;
 if (window.supabase) {
   sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   window.sb = sb;
-  console.log('Supabase connected successfully');
+  console.log('Supabase client initialized');
+
+  // Connection Health Check
+  fetch(`${SUPABASE_URL}/rest/v1/`, { headers: { 'apikey': SUPABASE_ANON_KEY } })
+    .then(res => {
+      if (res.status === 404) {
+        console.error('Supabase Error: API NOT FOUND. Check your Project URL in main.js.');
+        alert('Supabase API Not Found! Your project might be paused or the ID is incorrect.');
+      } else if (res.status === 401) {
+        console.error('Supabase Error: Invalid API Key.');
+      } else {
+        console.log('Supabase connection verified');
+      }
+    })
+    .catch(err => console.error('Supabase Connection Failed:', err));
 } else {
   console.error('Supabase CDN not loaded!');
 }
