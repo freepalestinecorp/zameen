@@ -233,13 +233,18 @@
       }
     });
 
-    document.addEventListener('DOMContentLoaded', function() {
+    const initDashboard = function() {
       setTimeout(function() {
         if(window.fetchAndRenderUserProperties) {
           window.fetchAndRenderUserProperties('user-properties-list-widget');
         }
       }, 500);
-    });
+    };
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initDashboard);
+    } else {
+      initDashboard();
+    }
 
     function switchDashboardTab(tabName) {
       document.querySelectorAll('.tab-content').forEach(function(t) { t.classList.remove('active'); });

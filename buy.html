@@ -130,13 +130,18 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./main.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    const initBuy = function() {
       setTimeout(function() {
         if(window.fetchAndRenderProperties) {
           window.fetchAndRenderProperties('dynamic-property-grid');
         }
       }, 500);
-    });
+    };
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initBuy);
+    } else {
+      initBuy();
+    }
   </script>
 </body>
 </html>

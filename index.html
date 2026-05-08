@@ -233,7 +233,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./main.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    const initIndex = function() {
       setTimeout(async function() {
         const grid = document.getElementById('popular-grid');
         if (!window.sb) {
@@ -268,6 +268,11 @@
           grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; padding:2rem; color: var(--text-muted);">Could not load properties.</p>';
         }
       }, 300);
-    });
+    };
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initIndex);
+    } else {
+      initIndex();
+    }
   </script></body>
 </html>

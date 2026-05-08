@@ -30,7 +30,7 @@ if (window.supabase) {
   console.error('Supabase CDN not loaded!');
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
+const initMain = async () => {
   console.log("Main Scripts Loaded");
   // Handle Loader if it exists on the page
   const loader = document.getElementById('loader-wrapper');
@@ -99,7 +99,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     }
   }
-});
+};
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initMain);
+} else {
+  initMain();
+}
 
 /**
  * Toggle Modal Visibility
