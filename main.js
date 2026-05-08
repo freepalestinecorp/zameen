@@ -339,18 +339,29 @@ window.fetchAndRenderProperties = async function(containerId, filters = {}) {
       // Get first image from comma separated list
       const firstImage = prop.image_url ? prop.image_url.split(',')[0] : 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3';
       return `
-      <article class="property-card" style="cursor: pointer;" onclick="window.location.href='property.html?id=${prop.id}'">
+      <article class="property-card" onclick="window.location.href='property.html?id=${prop.id}'">
         <div class="card-img-wrapper">
           <span class="badge">${prop.purpose === 'Sell' ? 'For Sale' : 'For Rent'}</span>
-          <img src="${firstImage}" alt="${prop.title}">
+          <img src="${firstImage}" alt="${prop.title}" loading="lazy">
+          <div class="card-overlay">
+            <span>View Details</span>
+          </div>
         </div>
         <div class="card-content">
           <div class="price">PKR ${Number(prop.price).toLocaleString()}</div>
           <h3 class="title">${prop.title}</h3>
-          <div class="location">${prop.location}, ${prop.city}</div>
+          <div class="location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            ${prop.location}, ${prop.city}
+          </div>
           <div class="features">
-            <span>🏠 ${prop.property_type}</span>
-            <span style="margin-left: auto; font-size: 0.8rem; color: var(--text-light);">By: ${prop.publisher_name || 'Agent'}</span>
+            <span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                ${prop.property_type}
+            </span>
+            <span style="margin-left: auto; font-size: 0.75rem; color: var(--text-light); font-weight: 600;">
+                Agent: ${prop.publisher_name ? prop.publisher_name.split(' ')[0] : 'Verified'}
+            </span>
           </div>
         </div>
       </article>
