@@ -7,13 +7,16 @@
   <link rel="stylesheet" href="./style.css">
   <style>
     .sell-header {
-      background-color: var(--bg-panel);
-      padding: 4rem 2rem;
+      background: linear-gradient(to right, rgba(15, 23, 42, 0.9), rgba(0, 166, 81, 0.9)), url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1500&q=80') center/cover;
+      padding: 6rem 2rem;
       text-align: center;
-      border-bottom: 1px solid var(--border-color);
+      color: white;
+      position: relative;
     }
-    .sell-header h1 { font-size: 2.5rem; color: var(--primary); }
-    .sell-header p { font-size: 1.1rem; color: var(--text-muted); max-width: 600px; margin: 1rem auto 0; }
+    .sell-header::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 100%; height: 50px; background: linear-gradient(to top, var(--bg-main), transparent); }
+    .sell-header h1 { font-size: 3rem; color: #ffffff; font-weight: 800; letter-spacing: -0.5px; animation: slideUp 0.8s ease; text-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+    .sell-header p { font-size: 1.15rem; color: rgba(255,255,255,0.9); max-width: 650px; margin: 1rem auto 0; animation: slideUp 1s ease; }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     
     .sell-layout {
       display: grid;
@@ -23,33 +26,45 @@
     }
     
     .sell-form-container {
-      background: #ffffff;
-      padding: 2rem;
-      border-radius: var(--radius-md);
-      box-shadow: var(--shadow-md);
-      border: 1px solid var(--border-color);
+      background: var(--bg-panel);
+      padding: 2.5rem;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      border: 1px solid rgba(0,0,0,0.05);
+      position: relative;
+      top: -3rem;
+      z-index: 10;
     }
     
-    .recently-sold h2 { margin-bottom: 1.5rem; }
+    .recently-sold { padding-top: 2rem; }
+    .recently-sold h2 { margin-bottom: 0.5rem; font-size: 1.8rem; }
     
     .sold-card {
       display: flex;
-      gap: 1rem;
-      padding: 1rem;
+      gap: 1.5rem;
+      padding: 1.25rem;
       border: 1px solid var(--border-color);
-      border-radius: var(--radius-sm);
-      margin-bottom: 1rem;
-      background: #ffffff;
+      border-radius: var(--radius-md);
+      margin-bottom: 1.5rem;
+      background: var(--bg-panel);
+      transition: var(--transition);
+      box-shadow: var(--shadow-sm);
+    }
+    .sold-card:hover {
+      transform: translateX(10px);
+      box-shadow: var(--shadow-md);
+      border-color: rgba(0, 166, 81, 0.3);
     }
     .sold-card img {
-      width: 120px;
-      height: 90px;
+      width: 140px;
+      height: 100px;
       object-fit: cover;
       border-radius: var(--radius-sm);
     }
-    .sold-info h4 { font-size: 1.1rem; margin-bottom: 0.25rem; }
-    .sold-info .price { color: var(--primary); font-weight: bold; margin-bottom: 0.25rem; }
-    .sold-info .date { font-size: 0.85rem; color: var(--text-muted); }
+    .sold-info { display: flex; flex-direction: column; justify-content: center; }
+    .sold-info h4 { font-size: 1.2rem; margin-bottom: 0.25rem; }
+    .sold-info .price { color: var(--primary); font-weight: 800; font-size: 1.1rem; margin-bottom: 0.5rem; }
+    .sold-info .date { font-size: 0.9rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.4rem; }
     
     @media (max-width: 900px) {
       .sell-layout { grid-template-columns: 1fr; }
