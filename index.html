@@ -87,6 +87,16 @@
     <h2 style="color: var(--primary);">Zameen</h2>
     <p style="color: var(--text-muted);">Finding the best properties...</p>
   </div>
+  <!-- Failsafe: guarantee loader hides even if scripts fail -->
+  <script>
+    (function(){
+      var t=setTimeout(function(){
+        var l=document.getElementById('loader-wrapper');
+        if(l){l.style.opacity='0';setTimeout(function(){l.style.display='none'},300)}
+      },3000);
+      window.__loaderTimeout=t;
+    })();
+  </script>
 
   <!-- Navbar -->
   <nav class="navbar">
@@ -231,7 +241,7 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="./main.js"></script>
+  <script src="/main.js"></script>
   <script>
     const initIndex = function() {
       setTimeout(async function() {
