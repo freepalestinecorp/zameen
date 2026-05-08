@@ -28,72 +28,58 @@
       to { opacity: 1; transform: translateY(0); } 
     }
 
-    /* Gallery Redesign */
-    .gallery-section {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 1rem;
-      height: 550px;
+    /* Gallery Redesign - Classic Premium */
+    .gallery-container {
       margin-bottom: 3rem;
+    }
+
+    .main-image-viewport {
+      width: 100%;
+      height: 600px;
       border-radius: var(--radius-lg);
       overflow: hidden;
-      box-shadow: var(--shadow-xl);
+      box-shadow: var(--shadow-lg);
+      margin-bottom: 1.5rem;
+      background: #eee;
     }
 
-    .main-photo {
-      width: 100%;
-      height: 100%;
-      position: relative;
-      cursor: zoom-in;
-    }
-
-    .main-photo img {
+    .main-image-viewport img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.7s ease;
+      transition: opacity 0.3s ease;
     }
 
-    .main-photo:hover img {
-      transform: scale(1.03);
-    }
-
-    .side-photos {
-      display: grid;
-      grid-template-rows: 1fr 1fr;
-      gap: 1rem;
-    }
-
-    .side-photo {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .side-photo img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.5s ease;
-    }
-
-    .side-photo:hover img {
-      transform: scale(1.05);
-    }
-
-    .more-photos-overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(0,0,0,0.4);
+    .thumbnails-row {
       display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: 700;
-      font-size: 1.2rem;
-      backdrop-filter: blur(2px);
+      gap: 1rem;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+      scrollbar-width: thin;
+      scrollbar-color: var(--primary) transparent;
+    }
+
+    .thumbnail-item {
+      flex: 0 0 120px;
+      height: 80px;
+      border-radius: var(--radius-md);
+      overflow: hidden;
       cursor: pointer;
+      border: 2px solid transparent;
+      transition: var(--transition);
+      opacity: 0.6;
+    }
+
+    .thumbnail-item:hover, .thumbnail-item.active {
+      opacity: 1;
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    .thumbnail-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
     /* Layout */
@@ -311,19 +297,19 @@
           
           container.innerHTML = `
             <!-- Gallery Section -->
-            <div class="gallery-section">
-              <div class="main-photo" onclick="window.open('${images[0]}', '_blank')">
-                <img src="${images[0]}" alt="Main Property View">
+            <div class="gallery-container">
+              <div class="main-image-viewport">
+                <img id="main-img-view" src="${images[0]}" alt="Property Main Image">
               </div>
-              <div class="side-photos">
-                <div class="side-photo">
-                  <img src="${images[1] || images[0]}" alt="Interior View">
-                </div>
-                <div class="side-photo">
-                  <img src="${images[2] || images[0]}" alt="Exterior View">
-                  ${images.length > 3 ? `<div class="more-photos-overlay">+${images.length - 2} More Photos</div>` : ''}
-                </div>
+              ${images.length > 1 ? `
+              <div class="thumbnails-row">
+                ${images.map((img, idx) => `
+                  <div class="thumbnail-item ${idx === 0 ? 'active' : ''}" onclick="updateMainImage('${img}', this)">
+                    <img src="${img}" alt="Thumbnail ${idx + 1}">
+                  </div>
+                `).join('')}
               </div>
+              ` : ''}
             </div>
 
             <div class="content-grid">
@@ -417,6 +403,18 @@
           container.innerHTML = '<div style="text-align:center; padding: 5rem 2rem;"><h2 style="color: red;">Failed to load property details.</h2><p>Please check your internet connection or try again later.</p></div>';
         }
       }, 300);
+    };
+
+    window.updateMainImage = function(src, el) {
+      const mainImg = document.getElementById('main-img-view');
+      mainImg.style.opacity = '0';
+      setTimeout(() => {
+        mainImg.src = src;
+        mainImg.style.opacity = '1';
+      }, 300);
+      
+      document.querySelectorAll('.thumbnail-item').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
     };
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', initProperty);
